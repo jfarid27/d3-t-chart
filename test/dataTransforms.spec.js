@@ -4,7 +4,8 @@ describe("t-chart-d3", function() {
     beforeEach(function() {
         TChart = require("./../t-chart-d3");
         d3 = require("./../node_modules/d3/d3");
-        tChart = TChart(d3);
+        underscore = require("./../node_modules/underscore/underscore");
+        tChart = TChart(d3, underscore);
         mockData = [{'a': 20}, {'a': 10}, {'a': 5}, {'a': 17}, {'a': 9}, {'a': 4}];
 
     });
@@ -15,7 +16,7 @@ describe("t-chart-d3", function() {
                 var measure;
                 beforeEach(function() {
                     measure = function(a, b) {
-                        return a > b
+                        return (a > b) ? 1 : -1;
                     }
                 })
                 describe("when given data and a property to sort by", function() {
@@ -24,10 +25,10 @@ describe("t-chart-d3", function() {
                         by = "a"
                         result = tChart.transform.sort(measure, mockData, by)
                     })
-                    it("should sort ascending from left and return results", function() {
+                    it("should sort descending from left and return results", function() {
                         var isSorted = false;
                         isSorted = mockData.reduce(function(agg, next){
-                            if ((agg.status === false) || (agg.prev < next.a)) {
+                            if ((agg.status === false) || (agg.prev > next.a)) {
                                 return false;
                             }
                             return {
@@ -36,7 +37,7 @@ describe("t-chart-d3", function() {
                             }
                         }, {
                             status: true,
-                            prev: Math.Infinity
+                            prev: Number.NEGATIVE_INFINITY
                         })
                         expect(isSorted).toBeTruthy();
                     });
@@ -45,16 +46,12 @@ describe("t-chart-d3", function() {
         });
         describe("normalize function", function() {
             describe("when set to normalize by max", function() {
-                var by;
-                beforeEach(function() {
-                    by = "max"
-                })
                 describe("when given data and a property to transform", function() {
                     var prop, expected, result;
                     beforeEach(function() {
                         prop = "a";
                         expected = [1, .5, .25, 17/20, 9/20, 4/20];
-                        result = tChart.transform.normalize(mockData, by);
+                        result = tChart.transform.normalize.byMax(mockData, prop);
                     })
                     it("should normalize data vs max", function() {
                         var vals = result.map(function(val, i){
@@ -74,7 +71,7 @@ describe("t-chart-d3", function() {
                     beforeEach(function() {
                         prop = "a";
                         expected = [20/65, 10/65, 5/65, 17/65, 9/65, 4/65];
-                        result = tChart.transform.normalize(mockData, by);
+                        result = tChart.transform.normalize.byIntegral(mockData, prop);
                     })
                     it("should normalize data vs sum of data", function() {
                         var vals = result.map(function(val, i){
