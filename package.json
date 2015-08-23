@@ -4,7 +4,7 @@
   "description": "A d3 library to append t-bar charts to a d3 selection.",
   "main": "index.js",
   "scripts": {
-     "test": "./node_modules/jasmine/bin/jasmine.js"
+    "test": "./node_modules/jasmine/bin/jasmine.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +25,8 @@
   },
   "homepage": "https://github.com/jfarid27/d3-t-chart",
   "dependencies": {
-    "d3": "^3.5.6"
+    "d3": "^3.5.6",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "jasmine": "^2.3.2"
